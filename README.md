@@ -2,7 +2,7 @@
 Modern Web Framework - Integrating Flowbite and Radix
 
 
-This guide will be based on the code you've provided and will help your team members understand and potentially reimplement these features in other locations. Let's break it down into sections:
+This guide help you reimplement these features in other locations. Let's break it down into sections:
 
 1. **File Upload**
 2. **File Download**
