@@ -1,6 +1,46 @@
 # lau-resty-flowradix
-Modern Web Framework - Integrating Flowbite and Radix
+Modern Web Framework - Integrating Flowbite and Radix.
 
+This repository combines several Lua libraries to enhance functionality for various systems:
+
+- **Matching System**:
+  - [lua-resty-radixtree](https://github.com/api7/lua-resty-radixtree)
+  - [lua-resty-ipmatcher](https://github.com/api7/lua-resty-ipmatcher)
+  - [lua-resty-expr](https://github.com/api7/lua-resty-expr)
+
+- **Session Manager System**:
+  - [lua-resty-session](https://github.com/bungle/lua-resty-session) or [lua-resty-cookie](https://github.com/cloudflare/lua-resty-cookie), you may set it in `src/configs/site_setting.lua`
+
+- **Upload System**:
+  - [lua-resty-post](https://github.com/antonheryanto/lua-resty-post)
+
+- **Template System**:
+  - [lua-resty-template](https://github.com/bungle/lua-resty-template)
+
+- **Utility Tools**:
+  - [lua-resty-random](https://github.com/bungle/lua-resty-random/tree/master)
+  - [lua-resty-jit-uuid](https://github.com/thibaultcha/lua-resty-jit-uuid/tree/master)
+  - [lua-resty-base-encoding](https://github.com/spacewander/lua-resty-base-encoding)
+  - [phc-winner-argon2](https://github.com/P-H-C/phc-winner-argon2)
+  - [lua-resty-string](https://github.com/openresty/lua-resty-string)
+  - [lua-resty-openssl](https://github.com/fffonion/lua-resty-openssl)
+## Requirements
+
+To manage dependencies efficiently, three repositories are included within the `requirements` folder:
+
+- **base-cencoding**
+- **argon2**
+- **radixtree**
+
+## Modifications
+
+### Radixtree
+
+I have modified the `radixtree` library to introduce a feature that allows global routes with non-blocking high performance.
+
+### Post Logic
+
+For the `lua-resty-post` library, I have modified the multipart upload logic. Now, it always returns a number array, ensuring consistent structure whether one or multiple files are uploaded simultaneously.
 
 This guide help you reimplement these features in other locations. Let's break it down into sections:
 
