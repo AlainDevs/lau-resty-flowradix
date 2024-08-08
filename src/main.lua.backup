@@ -1,0 +1,22 @@
+local ngx = ngx
+local rax = require("middleware.rax")
+-- rax.run()
+
+-- local rx = rax.run()
+local match_times = 10000
+ngx.update_time()
+local start_time = ngx.now()
+
+local res
+local type = type
+for _ = 1, match_times do
+    res = rax.run()
+end
+
+ngx.update_time()
+local used_time = ngx.now() - start_time
+ngx.say("matched res: ", res)
+ngx.say("Method: ", ngx.req.get_method())
+ngx.say("match times: ", match_times)
+ngx.say("time used  : ", used_time, " sec")
+ngx.say("QPS        : ", math.floor(match_times / used_time))

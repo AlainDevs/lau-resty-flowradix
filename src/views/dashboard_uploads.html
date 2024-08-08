@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+{(html_header.html)}
+
+<body class="dark:bg-gray-900">
+  <div class="antialiased bg-gray-50 dark:bg-gray-900">
+    {(dashboard_nav.html)}
+    {(dashboard_aside.html)}
+
+    <main class="p-4 md:ml-64 h-auto pt-20">
+      <section class="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
+        <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+          <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+              <div class="w-full md:w-1/2">
+                <form class="flex items-center">
+                  <label for="simple-search" class="sr-only">Search</label>
+                  <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                        viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                          d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                          clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <input type="text" id="simple-search"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-sky-500 dark:focus:border-sky-500"
+                      placeholder="Search" required="">
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- File Upload Form -->
+            <form id="uploadForm" action="/admins/uploads" method="post" enctype="multipart/form-data" class="mb-6">
+              <div class="flex items-center justify-center w-full">
+                <label for="dropzone-file"
+                  class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                  <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                    </svg>
+                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to
+                        upload</span> or drag and drop</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                  </div>
+                  <input id="dropzone-file" name="uploads" type="file" class="hidden" multiple />
+                </label>
+              </div>
+              <div id="fileSelectionMessage" class="mt-4 text-center text-sm text-gray-500 dark:text-gray-400 hidden">
+                You have selected multiple files, please feel free to click the upload button to start uploading
+              </div>
+              <div class="mt-4 text-center">
+                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Upload
+                  Files</button>
+              </div>
+            </form>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" class="px-4 py-3">File name</th>
+                    <th scope="col" class="px-4 py-3">Type</th>
+                    <th scope="col" class="px-4 py-3">Size</th>
+                    <th scope="col" class="px-4 py-3">
+                      <span class="sr-only">Actions</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if #uploads_list == 0 then %}
+                  <tr class="border-b dark:border-gray-700">
+                    <td colspan="4" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
+                      Please feel free to upload your first file here!
+                    </td>
+                  </tr>
+                  {% end %}
+                  {% for _, file in ipairs(uploads_list) do %}
+                  <tr class="border-b dark:border-gray-700">
+                    <th scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                      <a href="/download/{{file.uuid}}">{{file.name}}</a>
+                    </th>
+                    <td class="px-4 py-3">{{file.type}}</td>
+                    <td class="px-4 py-3">{{file.size}}</td>
+                    <td class="px-4 py-3 flex items-center justify-end">
+                      <button id="{{file.uuid}}-dropdown-button" data-dropdown-toggle="{{file.uuid}}-dropdown"
+                        class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100"
+                        type="button">
+                        <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                        </svg>
+                      </button>
+                      <div id="{{file.uuid}}-dropdown"
+                        class="hidden z-10 w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600">
+                        <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
+                          aria-labelledby="{{file.uuid}}-dropdown-button">
+                          <li>
+                            <a href="#"
+                              class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Download</a>
+                          </li>
+                          <li>
+                            <a href="#"
+                              class="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Rename</a>
+                          </li>
+                        </ul>
+                        <div class="py-1">
+                          <a href="#"
+                            class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  {% end %}
+                </tbody>
+              </table>
+            </div>
+            <nav
+              class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+              aria-label="Table navigation">
+              <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                Showing
+                <span class="font-semibold text-gray-900 dark:text-white">1-{{#uploads_list}}</span>
+                of
+                <span class="font-semibold text-gray-900 dark:text-white">{{#uploads_list}}</span>
+              </span>
+              <!-- Pagination can be implemented here if needed -->
+            </nav>
+          </div>
+        </div>
+      </section>
+      {(modal.html, {smc = "successModalContent", fmc = "failModalContent", sb = "successButton"})}
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const dropzoneFile = document.getElementById('dropzone-file');
+          const fileSelectionMessage = document.getElementById('fileSelectionMessage');
+          const uploadForm = document.getElementById('uploadForm');
+          const successButton = document.getElementById('successButton');
+          const successModalContent = document.getElementById('successModalContent');
+          const failModalContent = document.getElementById('failModalContent');
+
+          dropzoneFile.addEventListener('change', function () {
+            if (this.files.length >= 1) {
+              fileSelectionMessage.classList.remove('hidden');
+            } else {
+              fileSelectionMessage.classList.add('hidden');
+            }
+          });
+
+          uploadForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Simulating form submission with fetch API
+            fetch(this.action, {
+              method: this.method,
+              body: new FormData(this)
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === 0) {
+                  successModalContent.classList.remove('hidden');
+                  failModalContent.classList.add('hidden');
+                  successButton.click(); // Trigger the success modal
+                  // delay 2sec then reload the current page
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                } else {
+                  successModalContent.classList.add('hidden');
+                  failModalContent.classList.remove('hidden');
+                  successButton.click(); // Trigger the success modal
+                  // delay 2sec then reload the current page
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                  console.error('Upload failed');
+                  // Handle error case here
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                // Handle error case here
+              });
+          });
+        });
+      </script>
+      {(footer.html)}
+    </main>
+  </div>
+</body>
+
+</html>
